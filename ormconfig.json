@@ -1,0 +1,10 @@
+{
+   "type": "postgres",
+   "host": "localhost",
+   "port": 5432,
+   "username": "cm",
+   "password": "cm",
+   "database": "back-end-app",
+   "entities": ["dist/entities/*.js"],
+   "migrations": ["dist/migrations/*.js"]
+}

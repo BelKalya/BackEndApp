@@ -1,0 +1,38 @@
+{
+   "name": "backendapp",
+   "version": "1.0.0",
+   "description": "",
+   "main": "index.js",
+   "scripts": {
+      "build": "tsc",
+      "watch": "tsc -w",
+      "dev": "env-cmd -f .env nodemon dist/index.js",
+      "start": "ts-node src/index.ts",
+      "typeorm": "node --require ts-node/register ./node_modules/typeorm/cli.js"
+   },
+   "repository": {
+      "type": "git",
+      "url": "git+https://github.com/BelKalya/BackEndApp.git"
+   },
+   "keywords": [],
+   "author": "",
+   "license": "ISC",
+   "bugs": {
+      "url": "https://github.com/BelKalya/BackEndApp/issues"
+   },
+   "homepage": "https://github.com/BelKalya/BackEndApp#readme",
+   "devDependencies": {
+      "@types/node": "8.10.66",
+      "nodemon": "2.0.15",
+      "ts-node": "10.4.0",
+      "tslib": "2.3.1",
+      "typescript": "3.3.3333"
+   },
+   "dependencies": {
+      "env-cmd": "10.1.0",
+      "pg": "8.7.1",
+      "reflect-metadata": "0.1.13",
+      "ts-node": "10.4.0",
+      "typeorm": "0.2.31"
+   }
+}
