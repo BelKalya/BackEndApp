@@ -10,15 +10,49 @@ export class User extends BaseEntity {
     id: number;
 
     @Field()
-    @Column()
-    firstName: string;
+    @Column({
+        unique: true,
+    })
+    email: string;
 
     @Field()
     @Column()
-    lastName: string;
+    password: string;
 
     @Field()
-    @Column()
-    age: number;
+    @Column({
+        nullable: true,
+    })
+    company: string;
+
+    @Field()
+    @Column({
+        nullable: true,
+    })
+    description: string;
+
+    @Field()
+    @Column({
+        nullable: true,
+    })
+    contactName: string;
+
+    @Field()
+    @Column({
+        nullable: true,
+    })
+    facebook: string;
+
+    @Field()
+    @Column({
+        nullable: true,
+    })
+    instagram: string;
+
+    @Field()
+    @Column({
+        nullable: true,
+    })
+    twitter: string;
 
 }

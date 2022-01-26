@@ -13,9 +13,8 @@ export class UserResolver{
         @Arg("options") options: UserDetails
     ) {
         const user = new User();
-        user.firstName = options.firstName;
-        user.lastName = options.lastName;
-        user.age = options.age;
+        user.email = options.email;
+        user.password = options.password;
         return User.save(user);
     }
 }

@@ -1,10 +1,40 @@
-import { InputType, Field } from "type-graphql";
+import {Field, InputType} from "type-graphql";
+
 @InputType()
 export class UserDetails {
     @Field()
-    firstName: string;
+    email: string;
+
     @Field()
-    lastName: string;
-    @Field()
-    age: number;
+    password: string;
+
+    @Field({
+        nullable: true}
+    )
+    company: string;
+
+    @Field({
+        nullable: true}
+    )
+    description: string;
+
+    @Field({
+        nullable: true}
+    )
+    contactName: string;
+
+    @Field({
+        nullable: true}
+    )
+    facebook: string;
+
+    @Field({
+        nullable: true}
+    )
+    instagram: string;
+
+    @Field({
+        nullable: true}
+    )
+    twitter: string;
 }
