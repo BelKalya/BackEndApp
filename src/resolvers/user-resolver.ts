@@ -1,7 +1,7 @@
 import {Arg, Ctx, Field, Mutation, ObjectType, Query, Resolver} from "type-graphql";
 import {User} from "../entity/User";
-import {UserDetails} from "./UserDetails"
 import {Context} from "../types";
+import {COOKIE_NAME} from "../constants";
 
 @ObjectType()
 class FieldError {
@@ -22,7 +22,6 @@ class UserResponse {
 
 @Resolver(User)
 export class UserResolver{
-    @Query(() => [User])
     @Mutation(() => UserResponse)
     async register(
         @Arg("email") email: string,
@@ -42,14 +41,13 @@ export class UserResolver{
         @Arg("password") password: string,
         @Ctx() {req}: Context
     ): Promise<UserResponse> {
-        const id = 1;
         const user = await User.findOne({ where: { email: email } });
         if (!user) {
             return {
                 errors: [
                     {
                         field: "email",
-                        message: "that email doesn't exist",
+                        message: "User with that email doesn't exist",
                     },
                 ],
             };
@@ -60,7 +58,7 @@ export class UserResolver{
                 errors: [
                     {
                         field: "password",
-                        message: "incorrect password",
+                        message: "Incorrect password",
                     },
                 ],
             };
@@ -69,5 +67,28 @@ export class UserResolver{
         req.session.userId = user.id;
 
         return { user };
+    }
+    @Query(() => User, { nullable: true })
+    me(@Ctx() { req }: Context) {
+        // you are not logged in
+        if (!req.session.userId) {
+            return null;
+        }
+
+        return User.findOne(req.session.userId);
+    }
+
+    @Mutation(() => Boolean)
+    logout(@Ctx() { req, res }: Context){
+        return new Promise<Boolean>(resolve => {
+            req.session.destroy((err) => {
+                res.clearCookie(COOKIE_NAME);
+                if (err) {
+                    resolve(false);
+                    return;
+                }
+                resolve(true);
+            })
+        })
     }
 }
