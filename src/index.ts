@@ -39,7 +39,7 @@ const main = async () => {
                 disableTouch: true,
             }),
             cookie: {
-                maxAge: 1000 * 60 * 60 * 24 * 365 * 10, // set to 30m for 30m sessions?
+                maxAge: 1000 * 60 * 60 * 24 * 30, // ~1 month
                 httpOnly: true,
                 sameSite: "lax",
                 secure: __prod__,

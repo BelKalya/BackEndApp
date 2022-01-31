@@ -2,6 +2,7 @@ import {Arg, Ctx, Field, Mutation, ObjectType, Query, Resolver} from "type-graph
 import {User} from "../entity/User";
 import {Context} from "../types";
 import {COOKIE_NAME} from "../constants";
+import * as bcrypt from "bcrypt";
 
 @ObjectType()
 class FieldError {
@@ -29,9 +30,9 @@ export class UserResolver{
         @Ctx() {req}: Context
     ): Promise<UserResponse> {
         const userData = new User();
-        const bcrypt = require('bcrypt');
         const salt = bcrypt.genSaltSync(10);
         const passwordToSave = bcrypt.hashSync(password, salt);
+        //FIXME don't run unneeded query catch the error instead
         const userWithEmail = await User.findOne({ where: { email: email } });
         if (userWithEmail) {
             return {
@@ -66,8 +67,9 @@ export class UserResolver{
                 ],
             };
         }
-        const valid = user.password === password;
-        if (!valid) {
+        const match = await bcrypt.compare(password, user.password);
+
+        if (!match) {
             return {
                 errors: [
                     {
@@ -79,8 +81,7 @@ export class UserResolver{
         }
 
         req.session.userId = user.id;
-
-        return { user };
+        return { user }
     }
     @Query(() => User, { nullable: true })
     me(@Ctx() { req }: Context) {
