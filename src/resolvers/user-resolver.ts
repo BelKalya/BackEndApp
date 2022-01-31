@@ -23,17 +23,15 @@ class UserResponse {
 @Resolver(User)
 export class UserResolver{
     @Query(() => [User])
-    users() {
-        return User.find();
-    }
     @Mutation(() => UserResponse)
     async register(
-        @Arg("options") options: UserDetails,
+        @Arg("email") email: string,
+        @Arg("password") password: string,
         @Ctx() {req}: Context
     ): Promise<UserResponse> {
         const userData = new User();
-        userData.email = options.email;
-        userData.password = options.password;
+        userData.email = email;
+        userData.password = password;
         const user = await User.save(userData);
         req.session.userId = user.id;
         return { user };
@@ -44,6 +42,7 @@ export class UserResolver{
         @Arg("password") password: string,
         @Ctx() {req}: Context
     ): Promise<UserResponse> {
+        const id = 1;
         const user = await User.findOne({ where: { email: email } });
         if (!user) {
             return {
