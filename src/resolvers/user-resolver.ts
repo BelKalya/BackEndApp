@@ -22,7 +22,6 @@ class UserResponse {
 
 @Resolver(User)
 export class UserResolver{
-    @Query(() => [User])
     @Mutation(() => UserResponse)
     async register(
         @Arg("email") email: string,
@@ -30,8 +29,22 @@ export class UserResolver{
         @Ctx() {req}: Context
     ): Promise<UserResponse> {
         const userData = new User();
+        const bcrypt = require('bcrypt');
+        const salt = bcrypt.genSaltSync(10);
+        const passwordToSave = bcrypt.hashSync(password, salt);
+        const userWithEmail = await User.findOne({ where: { email: email } });
+        if (userWithEmail) {
+            return {
+                errors: [
+                    {
+                        field: "email",
+                        message: "that email already exists",
+                    },
+                ],
+            };
+        }
         userData.email = email;
-        userData.password = password;
+        userData.password = passwordToSave;
         const user = await User.save(userData);
         req.session.userId = user.id;
         return { user };
