@@ -32,9 +32,12 @@ export class UserResolver{
         const userData = new User();
         const salt = bcrypt.genSaltSync(10);
         const passwordToSave = bcrypt.hashSync(password, salt);
-        //FIXME don't run unneeded query catch the error instead
-        const userWithEmail = await User.findOne({ where: { email: email } });
-        if (userWithEmail) {
+        try {
+            const user = await User.save(userData);
+            req.session.userId = user.id;
+            return { user };
+        }
+        catch (error) {
             return {
                 errors: [
                     {
@@ -44,11 +47,6 @@ export class UserResolver{
                 ],
             };
         }
-        userData.email = email;
-        userData.password = passwordToSave;
-        const user = await User.save(userData);
-        req.session.userId = user.id;
-        return { user };
     }
     @Mutation(() => UserResponse)
     async login(
@@ -86,6 +84,7 @@ export class UserResolver{
     @Query(() => User, { nullable: true })
     me(@Ctx() { req }: Context) {
         // you are not logged in
+        console.log('you are not logged in')
         if (!req.session.userId) {
             return null;
         }
