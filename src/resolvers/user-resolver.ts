@@ -3,6 +3,7 @@ import {User} from "../entity/User";
 import {Context} from "../types";
 import {COOKIE_NAME} from "../constants";
 import * as bcrypt from "bcrypt";
+import {UserDetails} from "./UserDetails";
 
 @ObjectType()
 class FieldError {
@@ -32,6 +33,8 @@ export class UserResolver{
         const userData = new User();
         const salt = bcrypt.genSaltSync(10);
         const passwordToSave = bcrypt.hashSync(password, salt);
+        userData.email = email;
+        userData.password = passwordToSave;
         try {
             const user = await User.save(userData);
             req.session.userId = user.id;
@@ -80,6 +83,22 @@ export class UserResolver{
 
         req.session.userId = user.id;
         return { user }
+    }
+    @Mutation(() => UserResponse)
+    async update(
+        @Arg("options") options: UserDetails,
+        @Ctx() {req}: Context
+    ): Promise<UserResponse> {
+        const userData = await User.findOne(req.session.userId);
+        userData.company = options.company;
+        userData.contactName = options.contactName;
+        userData.description = options.description;
+        userData.facebook = options.facebook;
+        userData.instagram = options.instagram;
+        userData.twitter = options.twitter;
+        const user = await User.save(userData);
+        req.session.userId = user.id;
+        return { user };
     }
     @Query(() => User, { nullable: true })
     me(@Ctx() { req }: Context) {

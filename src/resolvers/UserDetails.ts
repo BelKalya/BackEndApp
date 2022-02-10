@@ -2,12 +2,6 @@ import {Field, InputType} from "type-graphql";
 
 @InputType()
 export class UserDetails {
-    @Field()
-    email: string;
-
-    @Field()
-    password: string;
-
     @Field({
         nullable: true}
     )
